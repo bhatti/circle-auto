@@ -1,0 +1,24 @@
+version: 2.1
+orbs:
+  circle-auto-v1:
+    executors:
+      default:
+        docker:
+          - image: circleci/openjdk:8-jdk-node
+        environment:
+          # Disable fancy terminal updates
+          TERM: dumb
+    jobs:
+      security-test:
+        executor: default
+        parameters:
+          test_command:
+            type: string
+            default: test
+        steps:
+          - run: ./gradlew << parameters.test_command >>
+
+workflows:
+  tests:
+    jobs:
+      - circle-auto-v1/security-test
