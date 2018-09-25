@@ -4,8 +4,7 @@ orbs:
     executors:
       default:
         docker:
-          - ximage: circleci/openjdk:8-jdk-node
-          - image: circleci/openjdk:8-jdk
+          - image: circleci/openjdk:8-jdk-node
         environment:
           # Disable fancy terminal updates
           TERM: dumb
@@ -17,7 +16,7 @@ orbs:
             type: string
             default: test
         steps:
-          - run: ./gradlew << parameters.test_command >>
+          - run: gradle << parameters.test_command >>
 
 workflows:
   tests:
