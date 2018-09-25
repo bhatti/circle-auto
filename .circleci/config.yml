@@ -4,7 +4,8 @@ orbs:
     executors:
       default:
         docker:
-          - image: circleci/openjdk:8-jdk-node
+          - ximage: circleci/openjdk:8-jdk-node
+          - image: circleci/openjdk:8-jdk
         environment:
           # Disable fancy terminal updates
           TERM: dumb
