@@ -15,9 +15,10 @@ import com.nowsecure.auto.circleci.domain.ScoreInfo;
 import com.nowsecure.auto.circleci.domain.UploadRequest;
 import com.nowsecure.auto.circleci.utils.IOHelper;
 
-public class AutoGateway {
+public class NSAutoGateway {
     private static final String BINARY_URL_SUFFIX = "/binary/";
-    private static final String NOWSECURE_AUTO_SECURITY_TEST = " nowsecure-auto-security-test ";
+    private static final String NOWSECURE_AUTO_SECURITY_TEST = " nowsecure-auto-security-test v" + IOHelper.getVersion()
+                                                               + " ";
     private static final String NOWSECURE_AUTO_SECURITY_TEST_UPLOADED_BINARY_JSON = "/nowsecure-auto-security-test-uploaded-binary.json";
     private static final String NOWSECURE_AUTO_SECURITY_TEST_REPORT_REQUEST_JSON = "/nowsecure-auto-security-test-request.json";
     private static final String NOWSECURE_AUTO_SECURITY_TEST_PREFLIGHT_JSON = "/nowsecure-auto-security-test-preflight.json";
@@ -28,7 +29,7 @@ public class AutoGateway {
     private final NSAutoParameters params;
     private final File artifactsDir;
 
-    public AutoGateway(NSAutoParameters params) throws IOException {
+    public NSAutoGateway(NSAutoParameters params) throws IOException {
         this.params = params;
         this.artifactsDir = params.getArtifactsDir();
     }

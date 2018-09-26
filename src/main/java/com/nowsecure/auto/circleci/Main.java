@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.nowsecure.auto.circleci.domain.NSAutoParameters;
-import com.nowsecure.auto.circleci.gateway.AutoGateway;
+import com.nowsecure.auto.circleci.gateway.NSAutoGateway;
 
 /**
  * This class defines business logic for uploading mobile binary and retrieving
@@ -118,7 +118,7 @@ public class Main implements NSAutoParameters {
     }
 
     public void execute() throws IOException {
-        new AutoGateway(this).execute();
+        new NSAutoGateway(this).execute();
     }
 
     @Override
