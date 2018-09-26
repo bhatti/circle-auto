@@ -12,11 +12,15 @@ orbs:
       security-test:
         executor: default
         parameters:
-          test_command:
+          auto_url:
             type: string
-            default: test
+            default: "https://lab-api.nowsecure.com"
+          auto_token:
+            type: string
+            default: ${AUTO_TOKEN}
         steps:
-          - run: gradle << parameters.test_command >>
+          - checkout
+          - run: gradle run -Dauto.url=parameters.auto_url -Dauto.token=parameters.auto_token -Dauto.file=${AUTO_FILE} -Dauto.dir=${AUTO_DIR} -Dauto.group=${AUTO_GROUP} -Dauto.wait=${AUTO_WAIT} -Dauto.score=${AUTO_SCORE}
 
 workflows:
   tests:
