@@ -15,6 +15,7 @@ orbs:
             default: $AUTO_GROUP
           auto_file:
             type: string
+            default: $AUTO_FILE
           auto_wait:
             type: string
             default: "0"
@@ -44,6 +45,7 @@ orbs:
             default: $AUTO_GROUP
           auto_file:
             type: string
+            default: $AUTO_FILE
           auto_wait:
             type: string
             default: "0"
@@ -68,5 +70,4 @@ orbs:
 workflows:
   test:
     jobs:
-      - inline_security/inline_job:
-        auto_file: /Users/sbhatti/Desktop/apkpure_app_887.apk
+      - inline_security/inline_job
