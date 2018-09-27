@@ -11,9 +11,8 @@ jobs:
     environment:
     - TERM: dumb
     steps:
-    - checkout
     - run:
-        command: "echo file ${AUTO_FILE} dir ${AUTO_DIR}"
+        command: "echo file $AUTO_FILE dir $AUTO_DIR cir $CIRCLE_WORKING_DIRECTORY"
 workflows:
   version: 2
   workflow:

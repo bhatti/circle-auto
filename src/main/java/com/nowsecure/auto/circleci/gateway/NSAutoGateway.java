@@ -27,11 +27,14 @@ public class NSAutoGateway {
     private static final int ONE_MINUTE = 1000 * 60;
     //
     private final NSAutoParameters params;
-    private final File artifactsDir;
+    private final File workspaceDir = new File("/tmp/workspace");
+    private final File artifactsDir = new File(workspaceDir, "nowsecure-auto-security-test");
 
     public NSAutoGateway(NSAutoParameters params) throws IOException {
         this.params = params;
-        this.artifactsDir = params.getArtifactsDir();
+        if (!this.artifactsDir.mkdirs()) {
+            System.err.println("Failed to create " + artifactsDir);
+        }
     }
 
     public void execute() throws IOException {
@@ -146,7 +149,7 @@ public class NSAutoGateway {
     }
 
     private File getBinaryFile() throws IOException {
-        File file = IOHelper.find(artifactsDir, params.getBinaryName());
+        File file = IOHelper.find(workspaceDir, params.getBinaryName());
         if (file == null) {
             throw new IOException("Failed to find " + params.getBinaryName() + " under " + artifactsDir);
         }
@@ -182,11 +185,11 @@ public class NSAutoGateway {
         return url;
     }
 
-    void info(Object msg) {
+    public static void info(Object msg) {
         System.out.println(new Date() + NOWSECURE_AUTO_SECURITY_TEST + msg);
     }
 
-    void error(Object msg) {
+    public static void error(Object msg) {
         System.err.println(new Date() + NOWSECURE_AUTO_SECURITY_TEST + msg);
     }
 }

@@ -1,0 +1,41 @@
+version: 2.1
+description: "CircleCI orb for NowSecure AUTO that provides fully automated, mobile appsec testing coverage"
+executors:
+  default:
+    description: Java docker container to use when running the NowSecure AUTO orb
+    docker:
+      - image: circleci/openjdk:8-jdk-node
+    environment:
+      # Disable fancy terminal updates
+      TERM: dumb
+commands:
+  security_test:
+    description: Executes security test using NowSecure AUTO.
+    parameters:
+      auto_url:
+        type: string
+        default: "https://lab-api.nowsecure.com"
+      auto_token:
+        type: string
+        default: $AUTO_TOKEN
+      auto_group:
+        type: string
+        default: $AUTO_GROUP
+      auto_file:
+        type: string
+      auto_wait:
+        type: string
+        default: "0"
+      auto_score:
+        type: string
+        default: "0"
+    steps:
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - nowsecure-auto-security-test/*
+      - attach_workspace:
+        at: /tmp/workspace
+      - checkout
+      - run: echo gradle run -Dauto.url=<< parameters.auto_url >> -Dauto.token=<< parameters.auto_token >> -Dauto.file=<< parameters.auto_file >> -Dauto.group=<< parameters.auto_group >> -Dauto.wait=<< parameters.auto_wait >> -Dauto.score=<< parameters.auto_score >>
+

@@ -16,7 +16,6 @@ import com.nowsecure.auto.circleci.gateway.NSAutoGateway;
  */
 public class Main implements NSAutoParameters {
     private static final String DEFAULT_URL = "https://lab-api.nowsecure.com";
-    private File artifactsDir;
     private String apiUrl = DEFAULT_URL;
     private String group;
     private File binaryName;
@@ -24,19 +23,6 @@ public class Main implements NSAutoParameters {
     private boolean breakBuildOnScore;
     private int scoreThreshold;
     private String apiKey;
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.nowsecure.auto.jenkins.plugin.NSAutoParameters#getArtifactsDir()
-     */
-    public File getArtifactsDir() {
-        return artifactsDir;
-    }
-
-    public void setArtifactsDir(File artifactsDir) {
-        this.artifactsDir = artifactsDir;
-    }
 
     /*
      * (non-Javadoc)
@@ -123,9 +109,9 @@ public class Main implements NSAutoParameters {
 
     @Override
     public String toString() {
-        return "Main [artifactsDir=" + artifactsDir + ", apiUrl=" + apiUrl + ", group=" + group + ", binaryName="
-               + binaryName + ", waitMinutes=" + waitMinutes + ", breakBuildOnScore=" + breakBuildOnScore
-               + ", scoreThreshold=" + scoreThreshold + ", apiKey=" + apiKey + "]";
+        return "Main [apiUrl=" + apiUrl + ", group=" + group + ", binaryName=" + binaryName + ", waitMinutes="
+               + waitMinutes + ", breakBuildOnScore=" + breakBuildOnScore + ", scoreThreshold=" + scoreThreshold
+               + ", apiKey=" + apiKey + "]";
     }
 
     private static int parseInt(String name) {
@@ -157,11 +143,17 @@ public class Main implements NSAutoParameters {
         return value.length() == 0 ? def : value;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Main main = new Main();
         main.parseArgs(args);
 
-        main.execute();
+        try {
+            main.execute();
+            System.exit(0);
+        } catch (IOException | RuntimeException e) {
+            NSAutoGateway.error(e);
+            System.exit(1);
+        }
     }
 
     private void usage(String msg) {
@@ -170,11 +162,10 @@ public class Main implements NSAutoParameters {
         System.err.println(msg);
         System.err.println("Usage:\n");
         System.err.println(
-                "\tgradle run --args=\"-u auto-url -t api-token -t mobile-binary-file -d artifacts-dir -g user-group -f binary-file -w wait-for-completion-in-minutes -s min-score-to-pass\"");
+                "\tgradle run --args=\"-u auto-url -t api-token -t mobile-binary-file -g user-group -f binary-file -w wait-for-completion-in-minutes -s min-score-to-pass\"");
         System.err.println("\tOR");
         System.err
-                .println(
-                        "Usage: gradle run -Dauto.url=auto-url -Dauto.token=api-token -Dauto.file=mobile-binary-file -Dauto.dir=artifacts-dir"
+                .println("Usage: gradle run -Dauto.url=auto-url -Dauto.token=api-token -Dauto.file=mobile-binary-file"
                          + " -Dauto.group=user-group -Dauto.file=binary-file -Dauto.wait=wait-for-completion-in-minutes -Dauto.score=min-score-to-pass");
         System.err.println("\tDefault url is " + DEFAULT_URL);
         System.err.println("\tDefault auto-wait is 0, which means just upload without waiting for results");
@@ -195,8 +186,6 @@ public class Main implements NSAutoParameters {
                 this.apiUrl = args[i + 1].trim();
             } else if ("-f".equals(args[i])) {
                 this.binaryName = new File(args[i + 1].trim());
-            } else if ("-d".equals(args[i])) {
-                this.artifactsDir = new File(args[i + 1].trim());
             } else if ("-t".equals(args[i])) {
                 this.apiKey = args[i + 1].trim();
             } else if ("-w".equals(args[i])) {
@@ -224,16 +213,7 @@ public class Main implements NSAutoParameters {
             }
             this.binaryName = new File(val);
         }
-        if (artifactsDir == null) {
-            String val = getString("auto.dir", "");
-            if (val.length() == 0) {
-                this.usage("auto-dir is not defined for artifacts");
-            }
-            this.artifactsDir = new File(val);
-            if (!this.artifactsDir.exists() && !this.artifactsDir.mkdirs()) {
-                this.usage("auto-dir [" + this.artifactsDir + "] could not be created");
-            }
-        }
+
         if (this.waitMinutes == 0) {
             this.waitMinutes = parseInt("auto.wait");
         }

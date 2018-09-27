@@ -4,8 +4,6 @@ import java.io.File;
 
 public interface NSAutoParameters {
 
-    File getArtifactsDir();
-
     String getApiUrl();
 
     String getApiKey();
