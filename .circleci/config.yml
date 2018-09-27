@@ -66,8 +66,7 @@ orbs:
         environment:
           TERM: dumb
 workflows:
-  version: 2
-  workflow:
+  test:
     jobs:
       - inline_security/inline_job:
         auto_file: /Users/sbhatti/Desktop/apkpure_app_887.apk
