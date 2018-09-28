@@ -9,7 +9,7 @@ executors:
       # Disable fancy terminal updates
       TERM: dumb
 commands:
-  security_test:
+  sectest:
     description: Executes security test using NowSecure AUTO.
     parameters:
       auto_url:
@@ -25,10 +25,10 @@ commands:
         type: string
       auto_wait:
         type: string
-        default: "0"
+        default: "30"
       auto_score:
         type: string
-        default: "0"
+        default: "50"
     steps:
       - persist_to_workspace:
           root: /tmp/workspace
