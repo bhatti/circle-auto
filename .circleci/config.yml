@@ -72,5 +72,4 @@ orbs:
 workflows:
   test:
     jobs:
-      - insectest/inline_job:
-        auto_file: test.apk
+      - insectest/inline_job
