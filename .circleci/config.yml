@@ -55,8 +55,9 @@ orbs:
         steps:
           - attach_workspace:
               at: /tmp/workspace
+          - run: mkdir -p /tmp/workspace/nowsecure-auto-security-test
           - checkout
-          - run: echo gradle run -Dauto.url=<< parameters.auto_url >> -Dauto.token=<< parameters.auto_token >> -Dauto.file=<< parameters.auto_file >> -Dauto.group=<< parameters.auto_group >> -Dauto.wait=<< parameters.auto_wait >> -Dauto.score=<< parameters.auto_score >>
+          - run: gradle run -Dauto.url=<< parameters.auto_url >> -Dauto.token=<< parameters.auto_token >> -Dauto.file=<< parameters.auto_file >> -Dauto.group=<< parameters.auto_group >> -Dauto.wait=<< parameters.auto_wait >> -Dauto.score=<< parameters.auto_score >>
           - persist_to_workspace:
               root: /tmp/workspace
               paths:
