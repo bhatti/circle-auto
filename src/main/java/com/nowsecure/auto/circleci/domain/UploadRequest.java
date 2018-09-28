@@ -36,10 +36,10 @@ public class UploadRequest extends MetadataRequest {
         }
         //
         if (request.getPackageId() == null || request.getPackageId().isEmpty()) {
-            throw new IOException("Package-id not found in JSON");
+            throw new IOException("Binary file is not valid, package-id could not be found");
         }
         if (request.getBinary() == null || request.getBinary().isEmpty()) {
-            throw new IOException("Digest not found in JSON");
+            throw new IOException("Binary file is not valid, digest could not be found");
         }
         return request;
     }
