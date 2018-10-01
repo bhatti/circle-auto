@@ -1,12 +1,12 @@
 version: 2.1
-description: "CircleCI orb for NowSecure AUTO that provides fully automated, mobile appsec testing coverage"
+description: CircleCI orb for NowSecure AUTO that provides fully automated, mobile
+  appsec testing coverage
 executors:
   default:
     description: Java docker container to use when running the NowSecure AUTO orb
     docker:
-      - image: circleci/openjdk:8-jdk-node
+    - image: circleci/openjdk:8-jdk-node
     environment:
-      # Disable fancy terminal updates
       TERM: dumb
 commands:
   sectest:
@@ -14,7 +14,7 @@ commands:
     parameters:
       auto_url:
         type: string
-        default: "https://lab-api.nowsecure.com"
+        default: https://lab-api.nowsecure.com
       auto_token:
         type: string
         default: $AUTO_TOKEN
@@ -30,11 +30,14 @@ commands:
         type: string
         default: "50"
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - checkout
-      - run: gradle run -Dauto.url=<< parameters.auto_url >> -Dauto.token=<< parameters.auto_token >> -Dauto.file=<< parameters.auto_file >> -Dauto.group=<< parameters.auto_group >> -Dauto.wait=<< parameters.auto_wait >> -Dauto.score=<< parameters.auto_score >>
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - nowsecure-auto-security-test/*
+    - attach_workspace:
+        at: /tmp/workspace
+    - checkout
+    - run: gradle run -Dauto.url=<< parameters.auto_url >> -Dauto.token=<< parameters.auto_token >> -Dauto.file=<< parameters.auto_file >> -Dauto.group=<< parameters.auto_group >> -Dauto.wait=<< parameters.auto_wait >> -Dauto.score=<< parameters.auto_score >>
+    - persist_to_workspace:
+        root: /tmp/workspace
+        paths:
+        - nowsecure-auto-security-test/*
+    - store_artifacts:
+        path: /tmp/workspace/nowsecure-auto-security-test
+        destination: nowsecure-auto-security-test
