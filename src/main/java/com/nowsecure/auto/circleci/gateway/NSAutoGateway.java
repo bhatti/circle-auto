@@ -27,10 +27,9 @@ public class NSAutoGateway {
     private static final int ONE_MINUTE = 1000 * 60;
     //
     private final NSAutoParameters params;
-    private final File workspaceDir = new File("/tmp/workspace");
-    private final File artifactsDir = new File(workspaceDir, "nowsecure-auto-security-test");
+    private final File artifactsDir = new File("/tmp/workspace/nowsecure-auto-security-test");
 
-    public NSAutoGateway(NSAutoParameters params) throws IOException {
+    public NSAutoGateway(NSAutoParameters params) {
         this.params = params;
         if (!this.artifactsDir.mkdirs()) {
             System.err.println("Failed to create " + artifactsDir);
@@ -56,7 +55,7 @@ public class NSAutoGateway {
     }
 
     private UploadRequest uploadBinary() throws IOException, ParseException {
-        File file = getBinaryFile();
+        File file = params.getFile();
         //
         String url = buildUrl(BINARY_URL_SUFFIX);
         info("uploading binary " + file.getAbsolutePath() + " to " + url);
@@ -146,14 +145,6 @@ public class NSAutoGateway {
         }
         throw new IOException(
                 "Timedout" + getElapsedMinutes(started) + " while waiting for job " + uploadInfo.getTask());
-    }
-
-    private File getBinaryFile() throws IOException {
-        File file = IOHelper.find(workspaceDir, params.getBinaryName());
-        if (file == null) {
-            throw new IOException("Failed to find " + params.getBinaryName() + " under " + artifactsDir);
-        }
-        return file;
     }
 
     private String getElapsedMinutes(long started) {

@@ -10,7 +10,7 @@ public interface NSAutoParameters {
 
     String getGroup();
 
-    File getBinaryName();
+    File getFile();
 
     int getWaitMinutes();
 

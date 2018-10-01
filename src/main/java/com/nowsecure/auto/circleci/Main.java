@@ -18,7 +18,7 @@ public class Main implements NSAutoParameters {
     private static final String DEFAULT_URL = "https://lab-api.nowsecure.com";
     private String apiUrl = DEFAULT_URL;
     private String group;
-    private File binaryName;
+    private File file;
     private int waitMinutes;
     private boolean breakBuildOnScore;
     private int scoreThreshold;
@@ -66,12 +66,12 @@ public class Main implements NSAutoParameters {
      * @see com.nowsecure.auto.jenkins.plugin.NSAutoParameters#getBinaryName()
      */
     @Override
-    public File getBinaryName() {
-        return binaryName;
+    public File getFile() {
+        return file;
     }
 
-    public void setBinaryName(File binaryName) {
-        this.binaryName = binaryName;
+    public void setFile(File file) {
+        this.file = file;
     }
 
     /*
@@ -109,9 +109,9 @@ public class Main implements NSAutoParameters {
 
     @Override
     public String toString() {
-        return "Main [apiUrl=" + apiUrl + ", group=" + group + ", binaryName=" + binaryName + ", waitMinutes="
-               + waitMinutes + ", breakBuildOnScore=" + breakBuildOnScore + ", scoreThreshold=" + scoreThreshold
-               + ", apiKey=" + apiKey + "]";
+        return "Main [apiUrl=" + apiUrl + ", group=" + group + ", file=" + file + ", waitMinutes=" + waitMinutes
+               + ", breakBuildOnScore=" + breakBuildOnScore + ", scoreThreshold=" + scoreThreshold + ", apiKey="
+               + apiKey + "]";
     }
 
     private static int parseInt(String name) {
@@ -185,7 +185,7 @@ public class Main implements NSAutoParameters {
             } else if ("-g".equals(args[i])) {
                 this.apiUrl = args[i + 1].trim();
             } else if ("-f".equals(args[i])) {
-                this.binaryName = new File(args[i + 1].trim());
+                this.file = new File(args[i + 1].trim());
             } else if ("-t".equals(args[i])) {
                 this.apiKey = args[i + 1].trim();
             } else if ("-w".equals(args[i])) {
@@ -206,12 +206,15 @@ public class Main implements NSAutoParameters {
                 this.usage("auto-token is not defined");
             }
         }
-        if (binaryName == null) {
+        if (file == null) {
             String val = getString("auto.file", "");
             if (val.length() == 0) {
                 this.usage("auto-file is not defined");
             }
-            this.binaryName = new File(val);
+            this.file = new File(val);
+        }
+        if (!file.exists()) {
+            this.usage("auto-file doesn't exist, please specify full path");
         }
 
         if (this.waitMinutes == 0) {
