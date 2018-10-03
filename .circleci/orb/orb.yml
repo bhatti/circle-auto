@@ -12,20 +12,26 @@ commands:
   sectest:
     description: Executes security test using NowSecure AUTO.
     parameters:
+      # url for nowsecure auto API
       auto_url:
         type: string
         default: https://lab-api.nowsecure.com
+      # API token, visit https://docs.nowsecure.com/auto/integration-services/jenkins-integration to generate token
       auto_token:
         type: string
         default: $AUTO_TOKEN
+      # Specify group if you belong to multiple groups
       auto_group:
         type: string
         default: $AUTO_GROUP
+      # Specify absolute path of mobile binary, you would need to attach workspace to this plugin step
       auto_file:
         type: string
+      # Specify maximum time to wait for results, if you specify 0 then plugin won't wait for the results
       auto_wait:
         type: string
         default: "30"
+      # Specify minimum score the app should get from security testing, if you specify 0 then score won't be evaulated otherwise build will be marked as failure if security score is below this number
       auto_score:
         type: string
         default: "50"
