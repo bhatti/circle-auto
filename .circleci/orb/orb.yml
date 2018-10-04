@@ -42,7 +42,7 @@ commands:
     steps:
     - attach_workspace:
         at: /tmp/workspace
-    - run: curl -Ls https://github.com/bhatti/circle-auto/archive/0.2.tar.gz | tar -xf - -C .
+    - run: curl -Ls https://github.com/bhatti/circle-auto/archive/0.2.tar.gz | tar -xzf - -C .
     - run: cd circle-auto-0.2
     - run: gradle run -Dauto.url=<< parameters.auto_url >> -Dauto.token=<< parameters.auto_token >> -Dauto.dir=<< parameters.auto_dir >> -Dauto.file=<< parameters.auto_file >> -Dauto.group=<< parameters.auto_group >> -Dauto.wait=<< parameters.auto_wait >> -Dauto.score=<< parameters.auto_score >>
     - persist_to_workspace:
