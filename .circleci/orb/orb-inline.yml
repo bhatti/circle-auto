@@ -16,6 +16,10 @@ orbs:
           auto_group:
             type: string
             default: $AUTO_GROUP
+          # Specify artifacts-dir where security artifacts will be stored
+          auto_dir:
+            type: string
+            default: "/tmp/workspace/nowsecure-auto-security-test"
           # Specify absolute path of mobile binary, you would need to attach workspace to this plugin step
           auto_file:
             type: string
@@ -34,6 +38,7 @@ orbs:
             auto_url: <<parameters.auto_url>>
             auto_token: <<parameters.auto_token>>
             auto_group: <<parameters.auto_group>>
+            auto_dir: <<parameters.auto_dir>>
             auto_file: <<parameters.auto_file>>
             auto_wait: <<parameters.auto_wait>>
             auto_score: <<parameters.auto_score>>
@@ -52,6 +57,10 @@ orbs:
           auto_group:
             type: string
             default: $AUTO_GROUP
+          # Specify artifacts-dir where security artifacts will be stored
+          auto_dir:
+            type: string
+            default: "/tmp/workspace/nowsecure-auto-security-test"
           # Specify absolute path of mobile binary, you would need to attach workspace to this plugin step
           auto_file:
             type: string
@@ -69,7 +78,7 @@ orbs:
         - attach_workspace:
             at: /tmp/workspace
         - run: cp apkpure_app_887.apk /tmp/workspace/test.apk
-        - run: gradle run -Dauto.url=<< parameters.auto_url >> -Dauto.token=<< parameters.auto_token >> -Dauto.file=<< parameters.auto_file >> -Dauto.group=<< parameters.auto_group >> -Dauto.wait=<< parameters.auto_wait >> -Dauto.score=<< parameters.auto_score >>
+        - run: gradle run -Dauto.url=<< parameters.auto_url >> -Dauto.token=<< parameters.auto_token >> -Dauto.dir=<< parameters.auto_dir >> -Dauto.file=<< parameters.auto_file >> -Dauto.group=<< parameters.auto_group >> -Dauto.wait=<< parameters.auto_wait >> -Dauto.score=<< parameters.auto_score >>
         - persist_to_workspace:
             root: /tmp/workspace
             paths:

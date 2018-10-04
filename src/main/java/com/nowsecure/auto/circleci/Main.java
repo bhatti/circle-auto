@@ -23,6 +23,21 @@ public class Main implements NSAutoParameters {
     private boolean breakBuildOnScore;
     private int scoreThreshold;
     private String apiKey;
+    private File artifactsDir;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.nowsecure.auto.jenkins.plugin.NSAutoParameters#getArtifactsDir()
+     */
+    @Override
+    public File getArtifactsDir() {
+        return artifactsDir;
+    }
+
+    public void setArtifactsDir(File artifactsDir) {
+        this.artifactsDir = artifactsDir;
+    }
 
     /*
      * (non-Javadoc)
@@ -52,6 +67,7 @@ public class Main implements NSAutoParameters {
         this.group = group;
     }
 
+    @Override
     public String getApiKey() {
         return apiKey;
     }
@@ -109,9 +125,9 @@ public class Main implements NSAutoParameters {
 
     @Override
     public String toString() {
-        return "Main [apiUrl=" + apiUrl + ", group=" + group + ", file=" + file + ", waitMinutes=" + waitMinutes
-               + ", breakBuildOnScore=" + breakBuildOnScore + ", scoreThreshold=" + scoreThreshold + ", apiKey="
-               + apiKey + "]";
+        return "Main [artifactsDir=" + artifactsDir + ", apiUrl=" + apiUrl + ", group=" + group + ", file=" + file
+               + ", waitMinutes=" + waitMinutes + ", breakBuildOnScore=" + breakBuildOnScore + ", scoreThreshold="
+               + scoreThreshold + ", apiKey=" + apiKey + "]";
     }
 
     private static int parseInt(String name) {
@@ -162,10 +178,11 @@ public class Main implements NSAutoParameters {
         System.err.println(msg);
         System.err.println("Usage:\n");
         System.err.println(
-                "\tgradle run --args=\"-u auto-url -t api-token -t mobile-binary-file -g user-group -f binary-file -w wait-for-completion-in-minutes -s min-score-to-pass\"");
+                "\tgradle run --args=\"-u auto-url -d artifacts-dir -t api-token -t mobile-binary-file -g user-group -f binary-file -w wait-for-completion-in-minutes -s min-score-to-pass\"");
         System.err.println("\tOR");
         System.err
-                .println("Usage: gradle run -Dauto.url=auto-url -Dauto.token=api-token -Dauto.file=mobile-binary-file"
+                .println(
+                        "Usage: gradle run -Dauto.dir=artifacts-dir -Dauto.url=auto-url -Dauto.token=api-token -Dauto.file=mobile-binary-file"
                          + " -Dauto.group=user-group -Dauto.file=binary-file -Dauto.wait=wait-for-completion-in-minutes -Dauto.score=min-score-to-pass");
         System.err.println("\tDefault url is " + DEFAULT_URL);
         System.err.println("\tDefault auto-wait is 0, which means just upload without waiting for results");
@@ -184,6 +201,8 @@ public class Main implements NSAutoParameters {
                 this.apiUrl = args[i + 1].trim();
             } else if ("-g".equals(args[i])) {
                 this.apiUrl = args[i + 1].trim();
+            } else if ("-d".equals(args[i])) {
+                this.artifactsDir = new File(args[i + 1].trim());
             } else if ("-f".equals(args[i])) {
                 this.file = new File(args[i + 1].trim());
             } else if ("-t".equals(args[i])) {
@@ -217,12 +236,22 @@ public class Main implements NSAutoParameters {
             this.usage("auto-file doesn't exist, please specify full path");
         }
 
+        if (artifactsDir == null) {
+            String val = getString("auto.dir", "");
+            if (val.length() == 0) {
+                this.usage("auto-dir is not defined");
+            }
+            this.artifactsDir = new File(val);
+        }
+        if (!artifactsDir.exists()) {
+            artifactsDir.mkdirs();
+        }
         if (this.waitMinutes == 0) {
             this.waitMinutes = parseInt("auto.wait");
         }
         if (this.scoreThreshold == 0) {
             this.scoreThreshold = parseInt("auto.score");
         }
-        System.err.println(this);
     }
+
 }

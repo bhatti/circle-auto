@@ -27,12 +27,11 @@ public class NSAutoGateway {
     private static final int ONE_MINUTE = 1000 * 60;
     //
     private final NSAutoParameters params;
-    private final File artifactsDir = new File("/tmp/workspace/nowsecure-auto-security-test");
 
     public NSAutoGateway(NSAutoParameters params) {
         this.params = params;
-        if (!this.artifactsDir.mkdirs()) {
-            System.err.println("Failed to create " + artifactsDir);
+        if (!params.getArtifactsDir().mkdirs()) {
+            System.err.println("Failed to create " + params.getArtifactsDir());
         }
     }
 
@@ -60,7 +59,7 @@ public class NSAutoGateway {
         String url = buildUrl(BINARY_URL_SUFFIX);
         info("uploading binary " + file.getAbsolutePath() + " to " + url);
         String json = IOHelper.upload(url, params.getApiKey(), file.getCanonicalPath());
-        String path = artifactsDir.getCanonicalPath() + NOWSECURE_AUTO_SECURITY_TEST_UPLOADED_BINARY_JSON;
+        String path = params.getArtifactsDir().getCanonicalPath() + NOWSECURE_AUTO_SECURITY_TEST_UPLOADED_BINARY_JSON;
         IOHelper.save(path, json); //
         UploadRequest request = UploadRequest.fromJson(json);
         info("uploaded binary with digest " + request.getBinary() + " and saved output to " + path);
@@ -72,7 +71,7 @@ public class NSAutoGateway {
         info("Executing preflight for digest " + request.getBinary() + " to " + url);
         try {
             String json = IOHelper.get(url, params.getApiKey());
-            String path = artifactsDir.getCanonicalPath() + NOWSECURE_AUTO_SECURITY_TEST_PREFLIGHT_JSON;
+            String path = params.getArtifactsDir().getCanonicalPath() + NOWSECURE_AUTO_SECURITY_TEST_PREFLIGHT_JSON;
             IOHelper.save(path, json); //
             info("saved preflight results to " + path);
             if (json.contains("error")) {
@@ -89,7 +88,7 @@ public class NSAutoGateway {
         String url = buildUrl(
                 "/app/" + uploadRequest.getPlatform() + "/" + uploadRequest.getPackageId() + "/assessment/");
         String json = IOHelper.post(url, params.getApiKey());
-        String path = artifactsDir.getCanonicalPath() + NOWSECURE_AUTO_SECURITY_TEST_REPORT_REQUEST_JSON;
+        String path = params.getArtifactsDir().getCanonicalPath() + NOWSECURE_AUTO_SECURITY_TEST_REPORT_REQUEST_JSON;
         IOHelper.save(path, json); //
         AssessmentRequest request = AssessmentRequest.fromJson(json);
         info("triggered security test for digest " + uploadRequest.getBinary() + " to " + url + " and saved output to "
@@ -100,7 +99,7 @@ public class NSAutoGateway {
     private ReportInfo[] getReportInfos(AssessmentRequest uploadInfo) throws IOException, ParseException {
         String resultsUrl = buildUrl("/app/" + uploadInfo.getPlatform() + "/" + uploadInfo.getPackageId()
                                      + "/assessment/" + uploadInfo.getTask() + "/results");
-        String resultsPath = artifactsDir.getCanonicalPath() + NOWSECURE_AUTO_SECURITY_TEST_REPORT_JSON;
+        String resultsPath = params.getArtifactsDir().getCanonicalPath() + NOWSECURE_AUTO_SECURITY_TEST_REPORT_JSON;
         String reportJson = IOHelper.get(resultsUrl, params.getApiKey());
         ReportInfo[] reportInfos = ReportInfo.fromJson(reportJson);
         if (reportInfos.length > 0) {
@@ -112,7 +111,7 @@ public class NSAutoGateway {
 
     private ScoreInfo getScoreInfo(AssessmentRequest uploadInfo) throws ParseException, IOException {
         String scoreUrl = buildUrl("/assessment/" + uploadInfo.getTask() + "/summary");
-        String scorePath = artifactsDir.getCanonicalPath() + NOWSECURE_AUTO_SECURITY_TEST_SCORE_JSON;
+        String scorePath = params.getArtifactsDir().getCanonicalPath() + NOWSECURE_AUTO_SECURITY_TEST_SCORE_JSON;
         String scoreJson = IOHelper.get(scoreUrl, params.getApiKey());
         if (scoreJson.isEmpty()) {
             return null;

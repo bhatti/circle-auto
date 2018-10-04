@@ -24,6 +24,10 @@ commands:
       auto_group:
         type: string
         default: $AUTO_GROUP
+      # Specify artifacts-dir where security artifacts will be stored
+      auto_dir:
+        type: string
+        default: "/tmp/workspace/nowsecure-auto-security-test"
       # Specify absolute path of mobile binary, you would need to attach workspace to this plugin step
       auto_file:
         type: string
@@ -41,7 +45,7 @@ commands:
     - checkout
     - run: find .
     - run: gradle tasks
-    - run: gradle run -Dauto.url=<< parameters.auto_url >> -Dauto.token=<< parameters.auto_token >> -Dauto.file=<< parameters.auto_file >> -Dauto.group=<< parameters.auto_group >> -Dauto.wait=<< parameters.auto_wait >> -Dauto.score=<< parameters.auto_score >>
+    - run: gradle run -Dauto.url=<< parameters.auto_url >> -Dauto.token=<< parameters.auto_token >> -Dauto.dir=<< parameters.auto_dir >> -Dauto.file=<< parameters.auto_file >> -Dauto.group=<< parameters.auto_group >> -Dauto.wait=<< parameters.auto_wait >> -Dauto.score=<< parameters.auto_score >>
     - persist_to_workspace:
         root: /tmp/workspace
         paths:

@@ -10,6 +10,8 @@ public interface NSAutoParameters {
 
     String getGroup();
 
+    File getArtifactsDir();
+
     File getFile();
 
     int getWaitMinutes();
