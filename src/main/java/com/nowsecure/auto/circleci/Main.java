@@ -2,9 +2,11 @@ package com.nowsecure.auto.circleci;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 import com.nowsecure.auto.circleci.domain.NSAutoParameters;
 import com.nowsecure.auto.circleci.gateway.NSAutoGateway;
+import com.nowsecure.auto.circleci.utils.IOHelper;
 
 /**
  * This class defines business logic for uploading mobile binary and retrieving
@@ -15,6 +17,8 @@ import com.nowsecure.auto.circleci.gateway.NSAutoGateway;
  *
  */
 public class Main implements NSAutoParameters {
+    private static final int TIMEOUT = 60000;
+    private static final String PLUGIN_NAME = " circleci-nowsecure-auto-security-test v" + IOHelper.getVersion();
     private static final String DEFAULT_URL = "https://lab-api.nowsecure.com";
     private String apiUrl = DEFAULT_URL;
     private String group;
@@ -24,6 +28,7 @@ public class Main implements NSAutoParameters {
     private int scoreThreshold;
     private String apiKey;
     private File artifactsDir;
+    private final IOHelper helper = new IOHelper(PLUGIN_NAME, TIMEOUT);
 
     /*
      * (non-Javadoc)
@@ -120,7 +125,7 @@ public class Main implements NSAutoParameters {
     }
 
     public void execute() throws IOException {
-        new NSAutoGateway(this).execute();
+        new NSAutoGateway(this, helper).execute();
     }
 
     @Override
@@ -167,7 +172,7 @@ public class Main implements NSAutoParameters {
             main.execute();
             System.exit(0);
         } catch (IOException | RuntimeException e) {
-            NSAutoGateway.error(e);
+            System.err.println(e);
             System.exit(1);
         }
     }
@@ -254,4 +259,14 @@ public class Main implements NSAutoParameters {
         }
     }
 
+    @Override
+    public void info(Object msg) {
+        System.out.println(new Date() + " " + PLUGIN_NAME + " " + msg);
+    }
+
+    @Override
+    public void error(Object msg) {
+        System.err.println(new Date() + " " + PLUGIN_NAME + " " + msg);
+
+    }
 }

@@ -18,4 +18,8 @@ public interface NSAutoParameters {
 
     int getScoreThreshold();
 
+    void info(Object obj);
+
+    void error(Object obj);
+
 }

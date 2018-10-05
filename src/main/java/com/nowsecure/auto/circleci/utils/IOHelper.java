@@ -21,31 +21,38 @@ import java.util.Scanner;
 import java.util.function.BiPredicate;
 
 public class IOHelper {
+    static String VERSION_TXT = "/version.txt";
     private static final String USER_AGENT = "User-Agent";
     private static final String GET = "GET";
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String AUTHORIZATION = "Authorization";
     private static final String POST = "POST";
-    private static final int TIMEOUT = 60000;
+    private String pluginName;
+    private int timeout;
 
-    public static byte[] load(String file) throws IOException {
+    public IOHelper(String pluginName, int timeout) {
+        this.pluginName = pluginName;
+        this.timeout = timeout;
+    }
+
+    public byte[] load(String file) throws IOException {
         return Files.readAllBytes(Paths.get(file));
     }
 
     public static String getVersion() {
         try {
-            InputStream in = IOHelper.class.getResourceAsStream("/version.txt");
+            InputStream in = IOHelper.class.getResourceAsStream(VERSION_TXT);
             Scanner scanner = new Scanner(in, "UTF-8");
             String version = scanner.next();
             scanner.close();
             in.close();
             return version;
         } catch (RuntimeException | IOException e) {
-            return "xxxx1.0-SNAPSHOT";
+            return "1.0.0";
         }
     }
 
-    public static File find(File parent, File file) throws IOException {
+    public File find(File parent, File file) throws IOException {
         if (file.isFile() && file.exists()) {
             return file;
         }
@@ -62,14 +69,14 @@ public class IOHelper {
         return null;
     }
 
-    public static void save(String path, String contents) throws IOException {
+    public void save(String path, String contents) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8))) {
             writer.write(contents.trim());
         }
     }
 
-    public static byte[] load(InputStream in) throws IOException {
+    public byte[] load(InputStream in) throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int nRead;
         byte[] data = new byte[1024];
@@ -80,7 +87,7 @@ public class IOHelper {
         return buffer.toByteArray();
     }
 
-    public static String get(String uri, String apiKey) throws IOException {
+    public String get(String uri, String apiKey) throws IOException {
         URL url = new URL(uri);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod(GET);
@@ -92,7 +99,7 @@ public class IOHelper {
         return json.trim();
     }
 
-    public static String post(String uri, String apiKey) throws IOException {
+    public String post(String uri, String apiKey) throws IOException {
         URL url = new URL(uri);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod(POST);
@@ -104,7 +111,7 @@ public class IOHelper {
         return json;
     }
 
-    public static String upload(String uri, String apiKey, String file) throws IOException {
+    public String upload(String uri, String apiKey, String file) throws IOException {
         URL url = new URL(uri);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod(POST);
@@ -122,12 +129,12 @@ public class IOHelper {
         return json;
     }
 
-    private static void initConnection(String apiKey, HttpURLConnection con) {
+    private void initConnection(String apiKey, HttpURLConnection con) {
         con.setRequestProperty(CONTENT_TYPE, "application/json");
         con.setRequestProperty(AUTHORIZATION, "Bearer " + apiKey);
-        con.setRequestProperty(USER_AGENT, "CircleCI-Plugin v" + getVersion());
-        con.setConnectTimeout(TIMEOUT);
-        con.setReadTimeout(TIMEOUT);
+        con.setRequestProperty(USER_AGENT, pluginName + " v" + getVersion());
+        con.setConnectTimeout(timeout);
+        con.setReadTimeout(timeout);
         con.setInstanceFollowRedirects(false);
     }
 }
