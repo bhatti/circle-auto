@@ -21,7 +21,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-defaultTasks 'clean', 'jar', 'cleanJars', 'copyJar'
+defaultTasks 'clean', 'test', 'jar', 'cleanJars', 'copyJar'
 
 mainClassName = 'com.nowsecure.auto.circleci.Main'
 tasks.withType(JavaExec) {
