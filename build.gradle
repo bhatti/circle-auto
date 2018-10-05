@@ -5,6 +5,7 @@ apply plugin: 'eclipse'
 apply plugin: 'application'
 
 version = file('src/main/resources/version.txt').text.trim()
+def jarFile = "circle-auto-" + version + ".jar"
 
 repositories {
     jcenter()
@@ -20,7 +21,20 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+defaultTasks 'clean', 'jar', 'cleanJars', 'copyJar'
+
 mainClassName = 'com.nowsecure.auto.circleci.Main'
 tasks.withType(JavaExec) {
     systemProperties System.properties
+}
+
+task copyJar(type: Copy) {
+    from file("${buildDir}/libs/" + jarFile)
+    into file("dist/" + jarFile)
+}
+
+task cleanJars(type: Delete) {
+    delete fileTree("dist").matching {
+        include "**/*.jar"
+    }
 }
